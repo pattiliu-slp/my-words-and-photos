@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Words &amp; Photos</title>
+<meta name="description" content="Build a personal vocabulary list for communication support. Nothing you type leaves your device.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+:root{
+  --bg:#F6F4EF; --surface:#FFFFFF; --surface-2:#EEEBE4; --ink:#17171A; --muted:#5B5954; --line:#DCD8CF;
+  --accent:#2D47F0; --accent-ink:#FFFFFF; --accent-soft:#E8EBFE; --danger:#C2362B;
+  --radius:20px; --shadow:0 1px 2px rgba(23,23,26,.04),0 10px 30px rgba(23,23,26,.06);
+  --fs:17px; --tap:48px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#111113; --surface:#1B1B1F; --surface-2:#27272C; --ink:#F3F2EE; --muted:#AEACA6; --line:#36363C;
+    --accent:#93A2FF; --accent-ink:#0D0F1C; --accent-soft:#232849; --danger:#FF8075;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.25);
+  }
+}
+html.easy{ --fs:21px; --tap:60px; }
+*{box-sizing:border-box}
+html{font-size:var(--fs);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.5;min-height:100vh}
+html.easy body{line-height:1.6}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:10px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+.muted{color:var(--muted)}
+
+/* Top bar */
+.top{position:sticky;top:0;z-index:30;background:var(--bg);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem;white-space:nowrap;letter-spacing:-.01em;background:none;border:0;padding:4px;cursor:pointer}
+.mark{width:34px;height:34px;border-radius:11px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;flex:none}
+.switch{display:flex;align-items:center;gap:10px;min-height:44px;padding:4px 5px 4px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:.85rem;cursor:pointer;white-space:nowrap}
+.switch .track{width:46px;height:28px;border-radius:999px;background:var(--surface-2);position:relative;transition:background .2s;flex:none}
+.switch .track::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .2s}
+.switch[aria-checked="true"] .track{background:var(--accent)}
+.switch[aria-checked="true"] .track::after{left:21px}
+.progress{height:4px;background:var(--line)}
+.progress span{display:block;height:100%;background:var(--accent);transition:width .35s ease}
+
+/* Layout */
+main{max-width:760px;margin:0 auto;padding:32px 16px 150px}
+main.wide{max-width:900px}
+h1{font-size:clamp(2rem,6.5vw,3.1rem);line-height:1.06;letter-spacing:-.035em;margin:.15em 0 .35em}
+h1.screen{font-size:clamp(1.8rem,5.5vw,2.5rem)}
+h2{font-size:1.5rem;line-height:1.15;letter-spacing:-.02em;margin:0}
+h3{font-size:1.1rem;margin:0}
+h1:focus,h2:focus{outline:none}
+.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;font-weight:700;color:var(--accent);margin:0}
+.lede{font-size:1.15rem;color:var(--muted);max-width:38ch;margin:0 0 1.2rem}
+.step{font-weight:700;color:var(--muted);font-size:.85rem;margin:0 0 .4rem}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:var(--tap);padding:0 1.3rem;border-radius:999px;border:2px solid transparent;font-weight:700;font-size:1rem;cursor:pointer;text-decoration:none;transition:transform .12s,background .15s,border-color .15s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-ghost{background:var(--surface);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-quiet{background:transparent;color:var(--muted);padding:0 .8rem}
+.btn-quiet:hover{color:var(--ink)}
+.icon-btn{display:inline-grid;place-items:center;width:var(--tap);height:var(--tap);border-radius:14px;border:0;background:transparent;color:var(--muted);cursor:pointer;flex:none}
+.icon-btn:hover{background:var(--surface-2);color:var(--ink)}
+.speak{display:inline-flex;align-items:center;gap:.45rem;min-height:40px;padding:0 .9rem;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:.85rem;cursor:pointer;color:var(--ink)}
+html.easy .speak{min-height:52px;font-size:.9rem}
+.speak[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+/* Welcome */
+.hero{padding:8px 0 12px}
+.hero-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.q{font-size:1.25rem;margin:28px 0 12px}
+.mode-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.mode-card{display:flex;flex-direction:column;align-items:flex-start;gap:10px;text-align:left;padding:22px;border-radius:var(--radius);background:var(--surface);border:2px solid var(--line);cursor:pointer;box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.mode-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.mode-card .ic{width:56px;height:56px;border-radius:17px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:32px}
+.mode-card strong{font-size:1.2rem;letter-spacing:-.01em}
+.mode-card span{color:var(--muted)}
+.resume{margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.privacy{display:flex;gap:10px;align-items:flex-start;margin-top:28px;padding:14px 16px;border-radius:16px;background:var(--surface-2);color:var(--muted);font-size:.92rem}
+.privacy svg{flex:none;margin-top:2px}
+.notice{padding:12px 16px;border-radius:14px;background:var(--accent-soft);margin:14px 0;font-size:.95rem}
+.notice.err{background:color-mix(in srgb,var(--danger) 14%,var(--surface))}
+
+/* Picker */
+.fields{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:18px 0 8px}
+.field{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:.9rem}
+.input,select.input,textarea.input{width:100%;min-height:var(--tap);padding:10px 14px;border-radius:14px;border:2px solid var(--line);background:var(--surface);font-weight:400;font-size:1rem}
+.input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 4px var(--accent-soft)}
+textarea.input{min-height:calc(var(--tap) * 1.8);resize:vertical;line-height:1.45}
+.tip{padding:16px 18px;border-radius:16px;border:2px dashed var(--line);margin:18px 0;font-size:.95rem}
+.tip strong{display:block;margin-bottom:4px}
+.group-label{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--muted);margin:26px 0 10px}
+.topic-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+html.easy .topic-grid{grid-template-columns:1fr}
+.topic{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;min-height:var(--tap);text-align:left;border-radius:16px;border:2px solid var(--line);background:var(--surface);cursor:pointer;transition:border-color .15s,background .15s}
+.topic:hover{border-color:var(--muted)}
+.topic[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.topic .ti{width:44px;height:44px;border-radius:13px;background:color-mix(in srgb,var(--c) 15%,var(--surface));color:var(--c);display:grid;place-items:center;flex:none;font-size:26px}
+.topic[aria-pressed="true"] .ti{background:color-mix(in srgb,var(--c) 22%,var(--surface))}
+.topic .tt{flex:1;min-width:0}
+.topic .tt b{display:block}
+.topic .tt small{color:var(--muted);font-size:.82rem;display:block;line-height:1.3}
+.topic .tick{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex:none;color:transparent}
+.topic[aria-pressed="true"] .tick{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.custom-row{display:flex;gap:10px;margin-top:12px}
+.custom-row .input{flex:1}
+.custom-wrap{display:flex;align-items:center;gap:6px}
+.custom-wrap .topic{flex:1}
+
+/* Section */
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.sec-head{display:flex;gap:14px;align-items:flex-start}
+.badge-ic{width:52px;height:52px;border-radius:16px;background:color-mix(in srgb,var(--c,var(--accent)) 15%,var(--surface));color:var(--c,var(--accent));display:grid;place-items:center;flex:none;font-size:30px}
+.badge-ic i,.ti i,.mode-card .ic i{line-height:1}
+@media (prefers-color-scheme: dark){.badge-ic,.topic .ti{color:color-mix(in srgb,var(--c,var(--accent)) 65%,#fff)!important}}
+html.easy .badge-ic{width:64px;height:64px;border-radius:20px;font-size:38px}
+.sec-head .txt{flex:1;min-width:0}
+.sec-head p{margin:.35rem 0 0;color:var(--muted)}
+.sec-tools{margin-top:12px}
+.collapse{display:flex;width:100%;align-items:center;gap:14px;background:none;border:0;padding:0;text-align:left;cursor:pointer}
+.collapse .count{margin-left:auto;font-weight:700;font-size:.85rem;color:var(--muted);white-space:nowrap}
+.collapse .chev{transition:transform .2s;color:var(--muted)}
+.collapse[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+.adder{display:flex;gap:10px;margin:18px 0 12px}
+.adder .input{flex:1;min-width:0;font-size:1.05rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.chips-label{font-size:.82rem;color:var(--muted);font-weight:700;width:100%}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border-radius:999px;border:1.5px dashed var(--muted);background:transparent;cursor:pointer;font-size:.92rem}
+html.easy .chip{min-height:52px;padding:0 18px}
+.chip:hover{border-style:solid}
+.chip.on{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.legend{font-size:.8rem;color:var(--muted);margin:4px 0 6px}
+.items{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.item{border-radius:16px;background:var(--surface-2);transition:box-shadow .3s}
+.item.flash{box-shadow:0 0 0 3px var(--accent)}
+.item-row{display:flex;align-items:center;gap:6px;padding:6px 6px 6px 16px;flex-wrap:wrap}
+.item-text{flex:1 1 180px;font-weight:700;font-size:1.05rem;word-break:break-word;padding:6px 0}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--surface);color:var(--muted);white-space:nowrap}
+.controls{display:flex;align-items:center;gap:2px;margin-left:auto}
+.item-details{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));padding:4px 16px 16px}
+.item-details .wide{grid-column:1/-1}
+.checkline{display:flex;align-items:center;gap:10px;font-weight:700;font-size:.9rem;min-height:var(--tap);cursor:pointer}
+.checkline input{width:24px;height:24px;accent-color:var(--accent);flex:none}
+.empty{color:var(--muted);font-style:italic;margin:4px 0 0}
+.page-head{margin-bottom:22px}
+.page-head p{max-width:60ch}
+
+/* Photos */
+.thumb{width:56px;height:56px;border-radius:12px;overflow:hidden;border:0;padding:0;flex:none;cursor:pointer;background:var(--surface);margin-left:-8px}
+html.easy .thumb{width:72px;height:72px;border-radius:14px}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-edit{grid-column:1/-1;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.photo-edit .preview{width:180px;height:180px;object-fit:cover;border-radius:16px;background:var(--surface);flex:none}
+.photo-edit .preview.scene{object-fit:contain}
+.photo-side{flex:1;min-width:220px;display:flex;flex-direction:column;gap:10px}
+.seg{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.seg legend{font-weight:700;font-size:.9rem;margin-bottom:6px;padding:0}
+.seg label{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:2px solid var(--line);border-radius:14px;cursor:pointer;background:var(--surface);font-weight:700}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.seg input,.pill input{accent-color:var(--accent);width:20px;height:20px;margin:2px 0 0;flex:none}
+.seg small{display:block;color:var(--muted);font-size:.8rem;font-weight:400}
+.photo-row{display:flex;gap:8px;flex-wrap:wrap}
+.photo-tip{font-size:.85rem;color:var(--muted);margin:0}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:2px solid var(--line);border-radius:999px;cursor:pointer;font-weight:700;background:var(--surface)}
+.pill:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.pill input{margin:0}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* Save */
+.actions{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin:20px 0}
+.action .sub{font-weight:700;font-size:.85rem;color:var(--ink);margin-top:4px}
+.action{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:20px;border-radius:var(--radius);background:var(--surface);border:1.5px solid var(--line);box-shadow:var(--shadow)}
+.action .ic{width:46px;height:46px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.action p{margin:0;color:var(--muted);font-size:.92rem}
+.action .btn{width:100%;margin-top:auto}
+.howto{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px 20px;margin:12px 0 20px}
+.howto summary{font-weight:700;cursor:pointer;min-height:36px;display:flex;align-items:center}
+.howto ol{padding-left:1.3rem;margin:.6rem 0}
+.howto li{margin-bottom:.4rem}
+.stat{font-size:1.15rem}
+
+/* Bottom nav */
+.navbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bg);background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+.navbar-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.navbar .spacer{flex:1}
+.navbar .btn-primary{min-width:140px}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;z-index:40;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:.92rem;box-shadow:0 10px 30px rgba(0,0,0,.25);transition:opacity .2s,transform .2s;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.toast button{border:0;background:var(--bg);color:var(--ink);border-radius:999px;min-height:40px;padding:0 16px;font-weight:700;cursor:pointer}
+.toast button[hidden]{display:none}
+
+@media (max-width:520px){
+  .brand{font-size:.95rem;gap:8px}
+  .mark{width:30px;height:30px}
+  .adder{flex-direction:column}
+  .adder .btn{width:100%}
+  .controls{width:100%;justify-content:flex-end}
+  .switch .lbl-long{display:none}
+}
+@media (min-width:521px){ .switch .lbl-short{display:none} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+
+/* Print */
+#printArea{display:none}
+@media print{
+  body>*:not(#printArea){display:none!important}
+  body{background:#fff}
+  #printArea{display:block;color:#000;font-family:'Plus Jakarta Sans',Arial,sans-serif;font-size:10.5pt;line-height:1.35}
+  #printArea h1{font-size:18pt;letter-spacing:-.01em;margin:0}
+  #printArea h2{font-size:12.5pt;margin:16pt 0 5pt;padding-bottom:3pt;border-bottom:1.5pt solid #000;break-after:avoid}
+  #printArea .p-head{display:flex;justify-content:space-between;gap:20pt;align-items:flex-start;border-bottom:2.5pt solid #000;padding-bottom:8pt}
+  #printArea .p-sub{margin:2pt 0 0;color:#444}
+  #printArea .p-meta{font-size:9.5pt;text-align:right;line-height:1.6}
+  #printArea .p-blank{display:flex;gap:24pt;margin:8pt 0 0;font-size:9.5pt}
+  #printArea .p-blank span{flex:1;border-bottom:.75pt solid #777;padding-bottom:2pt}
+  #printArea table{width:100%;border-collapse:collapse;font-size:9.5pt}
+  #printArea th{text-align:left;font-size:8pt;text-transform:uppercase;letter-spacing:.05em;color:#444;border-bottom:.75pt solid #999;padding:3pt 5pt}
+  #printArea td{border-bottom:.5pt solid #ccc;padding:4pt 5pt;vertical-align:top}
+  #printArea tr{break-inside:avoid}
+  #printArea td.w{font-weight:700;width:30%}
+  #printArea td.p{white-space:nowrap;width:16%}
+  #printArea dt{font-weight:700;margin-top:6pt}
+  #printArea dd{margin:1pt 0 0}
+  #printArea{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #printArea td.t{width:.7in;padding:3pt}
+  #printArea td.t img{width:.6in;height:.6in;object-fit:cover;border-radius:4pt;display:block}
+  #printArea .b-page{height:9.7in;display:flex;flex-direction:column;break-after:page;page-break-after:always}
+  #printArea .b-page:last-child{break-after:auto;page-break-after:auto}
+  #printArea .b-head{font-size:14pt;font-weight:800;padding:0 0 5pt;border-bottom:3pt solid var(--c);margin-bottom:8pt;display:flex;justify-content:space-between}
+  #printArea .b-head span{font-weight:400;color:#666;font-size:10pt}
+  #printArea .b-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--cols),1fr);grid-template-rows:repeat(var(--rows),minmax(0,1fr));gap:8pt}
+  #printArea .b-card{border:1.5pt solid #222;border-radius:10pt;overflow:hidden;display:flex;flex-direction:column;min-height:0;background:#fff}
+  #printArea .b-card.blank{border:0}
+  #printArea .b-img{flex:1;min-height:0;position:relative}
+  #printArea .b-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  #printArea .b-label{text-align:center;font-weight:800;padding:4pt 6pt 5pt;line-height:1.12;border-top:1pt solid #ddd}
+  #printArea .noimg .b-label{flex:1;display:flex;align-items:center;justify-content:center;border-top:0}
+  #printArea .b-2x3 .b-label{font-size:22pt} #printArea .b-2x3 .noimg .b-label{font-size:30pt}
+  #printArea .b-3x4 .b-label{font-size:15pt} #printArea .b-3x4 .noimg .b-label{font-size:21pt}
+  #printArea .b-4x5 .b-label{font-size:11pt} #printArea .b-4x5 .noimg .b-label{font-size:15pt}
+  #printArea .ck-note{font-size:9pt;color:#444;margin:8pt 0 0}
+  #printArea td.box{width:.45in}
+  #printArea td.box span{display:block;width:13pt;height:13pt;border:1.2pt solid #222;border-radius:3pt}
+  #printArea td.f{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:8.5pt;overflow-wrap:break-word;width:28%}
+  #printArea table.ck td.w{width:24%}
+  #printArea .p-foot{margin-top:18pt;font-size:8.5pt;color:#555;border-top:.75pt solid #999;padding-top:5pt}
+  @page{margin:.5in}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <button class="brand" data-act="home" aria-label="My Words and Photos — back to start">
+      <span class="mark" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="13" y2="13"/></svg></span>
+      My Words &amp; Photos
+    </button>
+    <button class="switch" id="easySwitch" role="switch" aria-checked="false">
+      <span><span class="lbl-long">Easier to read</span><span class="lbl-short">Easier</span></span><span class="track" aria-hidden="true"></span>
+    </button>
+  </div>
+  <div class="progress" id="progress" hidden><span id="progressBar"></span></div>
+</header>
+
+<main id="main" tabindex="-1"></main>
+
+<nav class="navbar" id="navbar" aria-label="Step navigation" hidden></nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastUndo" data-act="undo" hidden>Undo</button></div>
+<input type="file" id="fileInput" accept=".zip,.csv,text/csv,application/zip,image/*" multiple class="sr-only" tabindex="-1" aria-hidden="true">
+<input type="file" id="photoInput" accept="image/*" class="sr-only" tabindex="-1" aria-hidden="true">
+<div id="printArea" aria-hidden="true"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Icons (line style) ---------- */
+const I = {
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  pen:'<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+  pin:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+  thumbsdown:'<path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>',
+  smile:'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>',
+  coffee:'<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>',
+  chat:'<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',
+  square:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  book:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  activity:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+  clipboard:'<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>',
+  mic:'<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>',
+  alert:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+  tag:'<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>',
+  volume:'<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>',
+  stop:'<rect x="6" y="6" width="12" height="12" rx="2"/>',
+  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+  download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+  upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+  copy:'<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  printer:'<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>',
+  plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  chevdown:'<polyline points="6 9 12 15 18 9"/>',
+  left:'<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+  right:'<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  sliders:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>'
+};
+const ic = (n, s) => `<svg width="${s||22}" height="${s||22}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${I[n]||''}</svg>`;
+const phi = (n, w) => `<i class="ph-${w||'duotone'} ph-${n}" aria-hidden="true"></i>`;
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2, 10);
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); };
+
+/* ---------- Content ---------- */
+const SECTION_DEFS = [
+  {id:'people', csv:'People', title:'People', icon:'users-three', color:'#E0533D', core:true, fillOnly:true,
+   desc:'Family, friends, caregivers, pets',
+   prompt:'Who matters most to [you]? Write each name with who they are, like “daughter Sara.”',
+   examples:['Partner','Son','Daughter','Grandchild','Best friend','Caregiver','Doctor','Pet']},
+  {id:'places', csv:'Places', title:'Places', icon:'house-line', color:'#2E8B57', core:true, fillOnly:true,
+   desc:'Home, outings, meaningful places',
+   prompt:'Where [do you] go, or like to talk about? Places from the past count too.',
+   examples:['Home','Grocery store','Park','Place of worship','Gym','Hometown','Favorite restaurant','Work']},
+  {id:'routines', csv:'Daily routines', title:'Daily routines', icon:'sun-horizon', color:'#D98A00', core:true,
+   desc:'Mornings, meals, sleep, appointments',
+   prompt:'What happens on a usual day for [you]?',
+   examples:['Coffee','Breakfast','Shower','Take my pills','Go for a walk','Nap','Watch the news','Bedtime']},
+  {id:'likes', csv:'Likes & interests', title:'Likes & interests', icon:'heart', color:'#D63A7A', core:true,
+   desc:'Hobbies, sports, shows, music, food',
+   prompt:'What [do you] enjoy? Be specific — teams, shows, foods, music.',
+   examples:['Music','Gardening','Cooking','Baseball','Crossword','Movies','Dessert','Reading']},
+  {id:'dislikes', csv:'Dislikes', title:'Dislikes', icon:'thumbs-down', color:'#6B6F7A',
+   desc:'Things that bother or upset',
+   prompt:'What bothers [you]? These words help people avoid problems.',
+   examples:['Too loud','Too cold','Being rushed','Crowds','Spicy food','Too bright']},
+  {id:'feelings', csv:'Feelings & body', title:'Feelings & body', icon:'smiley', color:'#E8781A',
+   desc:'Emotions, pain, comfort, energy',
+   prompt:'How [do you] feel? Include body feelings, like pain or tired.',
+   examples:['Happy','Tired','Frustrated','Worried','It hurts','Too hot','I feel good','Sad']},
+  {id:'wants', csv:'Wants & needs', title:'Wants & needs', icon:'coffee', color:'#8B5A3C',
+   desc:'Everyday requests and help',
+   prompt:'What [do you] often ask for or need help with?',
+   examples:['Water','Bathroom','Help, please','Glasses','Phone','Blanket','Turn on the TV','Snack']},
+  {id:'messages', csv:'Important messages', title:'Important messages', icon:'chat-circle-text', color:'#2D6FE0',
+   desc:'Things said often, or hard to get across',
+   prompt:'What [do you] need to be able to say? Short sentences are great.',
+   examples:['I love you','Give me a minute','I know what I want to say','Ask me yes or no','Thank you','Please say that again']},
+  {id:'social', csv:'Social & conversation', title:'Social & conversation', icon:'hand-waving', color:'#14969A',
+   desc:'Greetings, jokes, stories, sayings',
+   prompt:'How [do you] connect with people? Add greetings, jokes, and favorite sayings.',
+   examples:['How are you?','What’s new?','Good to see you','That’s funny','Tell me more','See you later']},
+  {id:'identity', csv:'Life story & identity', title:'Life story & identity', icon:'book-open-text', color:'#7A4FD6', core:true, fillOnly:true,
+   desc:'Work, roles, proud moments',
+   prompt:'What matters about who [you are]? Work, family roles, places lived, proud moments.',
+   examples:['I worked as…','I grew up in…','I’m proud of…','I served in…','I’m a grandparent','I love to…']},
+  {id:'medical', csv:'Medical & care', title:'Medical & care', icon:'stethoscope', color:'#C2362B', core:true,
+   desc:'Conditions, providers, medicines, symptoms',
+   prompt:'Which health words come up? Names of doctors, medicines, symptoms.',
+   examples:['Neurologist','Medicine time','Dizzy','Short of breath','Appointment','Pharmacy']},
+  {id:'care', csv:'Care instructions', title:'Care instructions', icon:'bed', color:'#3F8F8A',
+   desc:'How [subj] like things done',
+   prompt:'What should helpers know about how [subj] like things done?',
+   examples:['Please move my legs','Raise the bed','Not too tight','Wait for my answer','Fix my pillow','Slow down']}
+];
+
+
+const TYPES = ['Word','Phrase','Topic','Message'];
+const MODE_LABEL = {self:'Self', with:'Together', about:'Family / caregiver'};
+const MODE_EYEBROW = {self:'For myself', with:'Together', about:'About someone'};
+const HEADER = ['Section','Word or phrase','Type','Photo or object','Photo file','Photo type','Notes','Date added','Added by'];
+
+const PRON = {
+  self:{'you':'you','subj':'you','your':'your','You':'You','Your':'Your','do you':'do you','you are':'you are'},
+  with:{'you':'you','subj':'you','your':'your','You':'You','Your':'Your','do you':'do you','you are':'you are'},
+  about:{'you':'them','subj':'they','your':'their','You':'They','Your':'Their','do you':'do they','you are':'they are'}
+};
+// [you] = object pronoun (them); [subj] = subject pronoun (they)
+function tx(s){
+  const p = PRON[state.mode || 'self'];
+  return s.replace(/\[(do you|you are|subj|Your|You|your|you)\]/g, (m, k) => p[k]);
+}
+
+/* ---------- State ---------- */
+function freshState(){
+  return {
+    mode:null, easy:false, easyTouched:false, screen:'welcome', prevScreen:null,
+    sections: SECTION_DEFS.map(d => Object.assign({}, d, {selected: !!d.core})),
+    items:[], owner:'', by:'',
+    openItems:new Set(), collapsed:new Set(),
+    dirty:false, notice:null, focus:null, flash:null, includeHeader:true, lastRemoved:null,
+    boardSize:'3x4', boardAll:true, photoTarget:null
+  };
+}
+let state = freshState();
+
+const $ = id => document.getElementById(id);
+const main = $('main'), navbar = $('navbar'), sw = $('easySwitch');
+const canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+
+const getSec = id => state.sections.find(s => s.id === id);
+const selectedSecs = () => state.sections.filter(s => s.selected);
+const itemsIn = id => state.items.filter(i => i.section === id);
+
+function flow(){
+  const secs = selectedSecs().map(s => 'sec:' + s.id);
+  return state.easy ? ['welcome','picker', ...secs, 'save'] : ['welcome','picker','all','save'];
+}
+
+/* ---------- Views ---------- */
+function speakBtn(text, label){
+  if(!canSpeak) return '';
+  return `<button class="speak" data-act="speak" data-text="${esc(text)}" aria-pressed="false">${ic('volume',18)}<span>${label || 'Read aloud'}</span></button>`;
+}
+
+function vWelcome(){
+  const n = state.items.length;
+  return `
+  <section class="hero">
+    <p class="eyebrow">Personal vocabulary builder</p>
+    <h1 id="screenTitle" tabindex="-1">Collect the words that matter.</h1>
+    <p class="lede">Names, places, phrases and favorite topics — gathered into one list your speech-language pathologist can use to build communication supports.</p>
+    <div class="hero-row">${speakBtn('Collect the words that matter. Names, places, phrases and favorite topics, in one list. Who is filling this out? For myself. With someone. Or about someone.')}</div>
+  </section>
+  ${state.notice ? `<div class="notice ${state.notice.err?'err':''}" role="status">${esc(state.notice.text)}</div>` : ''}
+  <h2 class="q">${n ? 'Who is filling this out today?' : 'Who is filling this out?'}</h2>
+  <div class="mode-grid">
+    <button class="mode-card" data-act="mode" data-mode="self"><span class="ic">${phi('user')}</span><strong>For myself</strong><span>I’m making my own list.</span></button>
+    <button class="mode-card" data-act="mode" data-mode="with"><span class="ic">${phi('users')}</span><strong>With someone</strong><span>We’re doing it together.</span></button>
+    <button class="mode-card" data-act="mode" data-mode="about"><span class="ic">${phi('pencil-simple-line')}</span><strong>About someone</strong><span>I’m making a list for someone I know well.</span></button>
+  </div>
+  <div class="resume">
+    <button class="btn btn-ghost" data-act="load">${ic('upload',20)} Continue a saved list</button>
+    <span class="muted">Pick the file you downloaded last time (.zip or .csv).</span>
+  </div>
+  <p class="privacy">${ic('lock',18)}<span>Nothing you type leaves this device. Your list is kept only when you download it.</span></p>`;
+}
+
+function vPicker(){
+  const m = state.mode;
+  const nameFields = m === 'self'
+    ? `<label class="field">Your name <span class="muted" style="font-weight:400">(optional)</span><input class="input" data-meta="owner" value="${esc(state.owner)}" autocomplete="name"></label>`
+    : `<label class="field">Whose list is this? <span class="muted" style="font-weight:400">(optional)</span><input class="input" data-meta="owner" value="${esc(state.owner)}"></label>
+       <label class="field">${m === 'with' ? 'Who is helping?' : 'Your name'} <span class="muted" style="font-weight:400">(optional)</span><input class="input" data-meta="by" value="${esc(state.by)}" autocomplete="name"></label>`;
+  const tip = m === 'with' ? `<div class="tip"><strong>Doing this together</strong>Let the person whose list it is lead. Give plenty of time. Offer choices, write key words down, and check: “Did I get that right?”</div>` : '';
+  const topic = s => {
+    const n = itemsIn(s.id).length;
+    const card = `<button class="topic" style="--c:${s.color}" id="topic-${s.id}" data-act="toggle-topic" data-sec="${s.id}" aria-pressed="${s.selected}">
+      <span class="ti">${phi(s.icon)}</span>
+      <span class="tt"><b>${esc(tx(s.title))}</b>${state.easy ? '' : `<small>${esc(tx(s.desc))}${n ? ` · ${n} added` : ''}</small>`}${state.easy && n ? `<small>${n} added</small>` : ''}</span>
+      <span class="tick">${ic('check',16)}</span></button>`;
+    return s.custom ? `<div class="custom-wrap">${card}<button class="icon-btn" data-act="remove-topic" data-sec="${s.id}" aria-label="Delete topic ${esc(s.title)}">${ic('x',20)}</button></div>` : card;
+  };
+  const core = state.sections.filter(s => s.core && !s.custom);
+  const more = state.sections.filter(s => !s.core && !s.custom);
+  const custom = state.sections.filter(s => s.custom);
+  return `
+  <p class="eyebrow">${MODE_EYEBROW[m]}</p>
+  <h1 class="screen" id="screenTitle" tabindex="-1">${esc(tx('Choose [your] topics'))}</h1>
+  <p class="lede">Tap a topic to turn it on or off. Skip anything that doesn’t fit.</p>
+  ${speakBtn(tx('Choose [your] topics. Tap a topic to turn it on or off. Skip anything that does not fit.'))}
+  <div class="fields">${nameFields}</div>
+  ${tip}
+  <p class="group-label">Suggested</p>
+  <div class="topic-grid">${core.map(topic).join('')}</div>
+  <p class="group-label">More topics</p>
+  <div class="topic-grid">${more.map(topic).join('')}</div>
+  <p class="group-label">${esc(tx('[Your] own topics'))}</p>
+  ${custom.length ? `<div class="topic-grid">${custom.map(topic).join('')}</div>` : ''}
+  <div class="custom-row">
+    <label class="sr-only" for="customInp">New topic name</label>
+    <input class="input" id="customInp" placeholder="Make a topic — e.g. Fishing, Church, Grandkids" maxlength="60">
+    <button class="btn btn-ghost" data-act="add-topic">${ic('plus',20)} Add</button>
+  </div>`;
+}
+
+function vItem(it){
+  const open = state.openItems.has(it.id);
+  const badges = [];
+  if(!state.easy) badges.push(`<span class="badge">${esc(it.type)}</span>`);
+  if(it.img && it.kind === 'scene') badges.push(`<span class="badge">Scene</span>`);
+  if(it.photo && !it.img) badges.push(`<span class="badge">Has photo/object</span>`);
+  if(it.notes) badges.push(`<span class="badge">Note</span>`);
+  return `<li class="item" id="item-${it.id}">
+    <div class="item-row">
+      ${it.imgUrl ? `<button class="thumb" id="thumb-${it.id}" data-act="toggle-item" data-id="${it.id}" aria-label="Photo of ${esc(it.text)}. Show details"><img src="${it.imgUrl}" alt=""></button>` : ''}
+      <span class="item-text">${esc(it.text)}</span>
+      ${badges.length ? `<span class="badges">${badges.join('')}</span>` : ''}
+      <span class="controls">
+        ${it.imgUrl ? '' : `<button class="icon-btn" id="cam-${it.id}" data-act="add-photo" data-id="${it.id}" aria-label="Add a photo of ${esc(it.text)}">${ic('camera',20)}</button>`}
+        <button class="icon-btn" id="tog-${it.id}" data-act="toggle-item" data-id="${it.id}" aria-expanded="${open}" aria-label="Details for ${esc(it.text)}">${ic('sliders',20)}</button>
+        <button class="icon-btn" data-act="remove" data-id="${it.id}" aria-label="Remove ${esc(it.text)}">${ic('x',20)}</button>
+      </span>
+    </div>
+    ${open ? `<div class="item-details">
+      ${it.imgUrl ? `<div class="photo-edit">
+          <img class="preview ${it.kind}" src="${it.imgUrl}" alt="Photo of ${esc(it.text)}">
+          <div class="photo-side">
+            <fieldset class="seg"><legend>What kind of photo is this?</legend>
+              <label><input type="radio" name="kind-${it.id}" data-field="kind" data-id="${it.id}" value="closeup" ${it.kind !== 'scene' ? 'checked' : ''}><span>Close-up<small>One person or thing filling the picture. Best for buttons and boards.</small></span></label>
+              <label><input type="radio" name="kind-${it.id}" data-field="kind" data-id="${it.id}" value="scene" ${it.kind === 'scene' ? 'checked' : ''}><span>Scene<small>A moment with its surroundings, like a birthday party. Best for scene pages in communication apps.</small></span></label>
+            </fieldset>
+            <div class="photo-row">
+              <button class="btn btn-ghost" data-act="add-photo" data-id="${it.id}">${ic('camera',18)} Replace</button>
+              <button class="btn btn-quiet" data-act="remove-photo" data-id="${it.id}">Remove photo</button>
+            </div>
+          </div>
+        </div>` : `<div class="photo-edit"><div class="photo-side">
+            <button class="btn btn-ghost" style="align-self:flex-start" data-act="add-photo" data-id="${it.id}">${ic('camera',20)} Add a photo</button>
+            <p class="photo-tip">Best photos: one person or thing, close up, plain background, good light.</p>
+          </div></div>`}
+      <label class="field">Type<select class="input" data-field="type" data-id="${it.id}">${TYPES.map(t => `<option ${t===it.type?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="checkline"><input type="checkbox" data-field="photo" data-id="${it.id}" ${it.photo?'checked':''}> Also have a real object or another photo</label>
+      <label class="field wide">Notes<input class="input" data-field="notes" data-id="${it.id}" value="${esc(it.notes)}" placeholder="e.g., photo is on my phone; she says it as “Sare”"></label>
+    </div>` : ''}
+  </li>`;
+}
+
+function secBlock(sec, compact){
+  const items = itemsIn(sec.id);
+  const collapsed = compact && state.collapsed.has(sec.id);
+  const title = tx(sec.title), prompt = sec.custom ? tx('Add words and phrases for this topic.') : tx(sec.prompt);
+  const head = compact
+    ? `<button class="collapse" data-act="collapse" data-sec="${sec.id}" id="col-${sec.id}" aria-expanded="${!collapsed}">
+         <span class="badge-ic" style="--c:${sec.color}">${phi(sec.icon)}</span>
+         <span class="txt"><h2>${esc(title)}</h2><p class="muted" style="margin:.2rem 0 0">${esc(prompt)}</p></span>
+         <span class="count">${items.length || ''}</span><span class="chev">${ic('chevdown',22)}</span>
+       </button>`
+    : `<div class="sec-head">
+         <span class="badge-ic" style="--c:${sec.color}">${phi(sec.icon)}</span>
+         <div class="txt"><h1 class="screen" id="screenTitle" tabindex="-1" style="margin:0">${esc(title)}</h1><p>${esc(prompt)}</p></div>
+       </div>
+       <div class="sec-tools">${speakBtn(title + '. ' + prompt)}</div>`;
+  if(collapsed) return head;
+  const chips = sec.examples && sec.examples.length ? `<div class="chips">
+      <span class="chips-label">${sec.fillOnly ? 'Ideas — tap one, then finish it' : 'Ideas — tap to add'}</span>
+      ${sec.examples.map((e, i) => {
+        const on = !sec.fillOnly && items.some(x => x.text.toLowerCase() === e.toLowerCase());
+        return `<button class="chip ${on?'on':''}" id="chip-${sec.id}-${i}" data-act="chip" data-sec="${sec.id}" data-val="${esc(e)}" ${sec.fillOnly ? '' : `aria-pressed="${on}"`}>${ic(on?'check':'plus',16)}${esc(e)}</button>`;
+      }).join('')}
+    </div>` : '';
+  const list = items.length
+    ? `<p class="legend">Camera button adds a photo · sliders button holds more details</p><ul class="items">${items.map(vItem).join('')}</ul>`
+    : `<p class="empty">Nothing added yet.</p>`;
+  return `${head}
+    <div class="adder">
+      <label class="sr-only" for="inp-${sec.id}">Add to ${esc(title)}</label>
+      <input class="input" id="inp-${sec.id}" data-adder="${sec.id}" placeholder="Type a word or phrase" autocomplete="off" enterkeyhint="done">
+      <button class="btn btn-primary" data-act="add" data-sec="${sec.id}">${ic('plus',20)} Add</button>
+    </div>
+    ${chips}${list}`;
+}
+
+
+function stepLabel(){
+  const f = flow(); const i = f.indexOf(state.screen);
+  return `<p class="step">Step ${i - 1} of ${f.length - 3}</p>`;
+}
+
+function vSectionScreen(id){
+  const sec = getSec(id);
+  if(!sec) return '';
+  return `${stepLabel()}${secBlock(sec, false)}`;
+}
+
+
+function vAll(){
+  const title = state.owner ? `${state.owner}’s word list` : tx('[Your] word list');
+  const secs = selectedSecs();
+  return `<header class="page-head">
+    <p class="eyebrow">${MODE_EYEBROW[state.mode]}</p>
+    <h1 class="screen" id="screenTitle" tabindex="-1">${esc(title)}</h1>
+    <p class="muted">Add as much or as little as you like. Press Enter to add quickly. The camera button adds a photo; the sliders button holds type, photo and notes.</p>
+  </header>
+  ${secs.length ? secs.map(s => `<section class="card">${secBlock(s, true)}</section>`).join('') : `<div class="card"><p class="empty">No topics chosen. Go back to pick some.</p></div>`}`;
+}
+
+function vSave(){
+  const n = state.items.length;
+  const topics = new Set(state.items.map(i => i.section)).size;
+  const nPhotos = state.items.filter(i => i.img).length;
+  return `<p class="eyebrow">Finish</p>
+  <h1 class="screen" id="screenTitle" tabindex="-1">${esc(tx('Save [your] list'))}</h1>
+  <p class="stat">${n ? `<strong>${n}</strong> ${n === 1 ? 'word or phrase' : 'words and phrases'} in <strong>${topics}</strong> ${topics === 1 ? 'topic' : 'topics'}.` : 'Nothing added yet — you can go back and add words.'}</p>
+  <div class="notice">${ic('lock',16)} <strong>This list is not stored online.</strong> Download it to keep it.</div>
+  ${speakBtn('Save your list. This list is not stored online. Download it to keep it. You can also copy it into Google Sheets, or print a summary.')}
+  <div class="actions">
+    <div class="action"><span class="ic">${ic('download',24)}</span><h3>Download</h3><p>${nPhotos ? `A .zip with your spreadsheet and ${nPhotos} photo${nPhotos===1?'':'s'}, named by word and sorted by topic. Keep it to add more later.` : 'A spreadsheet file (CSV). Opens in Google Sheets or Excel. Keep it to add more later.'}</p><button class="btn btn-primary" data-act="download">${ic('download',20)} Download list</button></div>
+    <div class="action"><span class="ic">${ic('copy',24)}</span><h3>Copy for Google Sheets</h3><p>Paste straight into a sheet you already keep.</p>
+      <label class="checkline"><input type="checkbox" id="incHeader" ${state.includeHeader?'checked':''}> Include column titles</label>
+      <button class="btn btn-ghost" data-act="copy">${ic('copy',20)} Copy</button></div>
+    <div class="action"><span class="ic">${ic('printer',24)}</span><h3>Print summary</h3><p>Grouped by topic. Bring it to your speech-language pathologist.</p><button class="btn btn-ghost" data-act="print" data-kind="summary">${ic('printer',20)} Print</button></div>
+    <div class="action"><span class="ic">${ic('grid',24)}</span><h3>Photo board</h3><p>Picture cards with words, one topic per page. For low-tech boards.</p>
+      <span class="sub">Cards per page (across × down)</span>
+      <div class="pills" role="radiogroup" aria-label="Cards per page">${['2x3','3x4','4x5'].map(z => `<label class="pill"><input type="radio" name="boardSize" value="${z}" ${state.boardSize===z?'checked':''}>${z.replace('x','×')}</label>`).join('')}</div>
+      <label class="checkline"><input type="checkbox" id="boardAll" ${state.boardAll?'checked':''}> Include words without photos</label>
+      <button class="btn btn-ghost" data-act="print" data-kind="board" ${n ? '' : 'disabled'}>${ic('printer',20)} Print board</button></div>
+    <div class="action"><span class="ic">${ic('clipboard',24)}</span><h3>Programming checklist</h3><p>For whoever sets up the communication app: every button label and its photo file, with tick boxes.</p>
+      <button class="btn btn-ghost" data-act="print" data-kind="checklist" ${n ? '' : 'disabled'}>${ic('printer',20)} Print checklist</button></div>
+  </div>
+  <details class="howto" ${state.easy ? 'open' : ''}>
+    <summary>How to add more later</summary>
+    <ol>
+      <li>Download your list.</li>
+      <li>Next time, open this page and choose <strong>Continue a saved list</strong>.</li>
+      <li>Pick the .zip (or .csv) file, add new words, then download again.</li>
+    </ol>
+    <p class="muted" style="margin:.4rem 0 0">To open the file in Google Sheets: go to sheets.google.com, choose File → Import → Upload, and select the file. If you downloaded a .zip, open it first — the spreadsheet is <em>word-list.csv</em>.</p>
+  </details>
+  <button class="btn btn-quiet" data-act="new">Start a new list</button>`;
+}
+
+function vNav(){
+  const f = flow(); const i = f.indexOf(state.screen);
+  const prev = f[i-1], next = f[i+1];
+  if(state.screen === 'welcome') return '';
+  let nextLabel = 'Next';
+  if(state.screen === 'picker') nextLabel = state.easy ? 'Start' : 'Continue';
+  if(next === 'save') nextLabel = 'Finish';
+  return `<div class="navbar-inner">
+    ${prev ? `<button class="btn btn-ghost" data-act="back">${ic('left',20)} Back</button>` : ''}
+    <span class="spacer"></span>
+    ${next ? `<button class="btn btn-primary" data-act="next">${nextLabel} ${ic('right',20)}</button>` : ''}
+  </div>`;
+}
+
+/* ---------- Render ---------- */
+function render(keepId){
+  document.documentElement.classList.toggle('easy', state.easy);
+  sw.setAttribute('aria-checked', String(state.easy));
+  const f = flow(); const i = f.indexOf(state.screen);
+  const prog = $('progress');
+  if(state.easy && state.screen !== 'welcome' && i > 0){ prog.hidden = false; $('progressBar').style.width = Math.round(i / (f.length - 1) * 100) + '%'; }
+  else prog.hidden = true;
+
+  const s = state.screen;
+  let html = '';
+  if(s === 'welcome') html = vWelcome();
+  else if(s === 'picker') html = vPicker();
+  else if(s.startsWith('sec:')) html = vSectionScreen(s.slice(4));
+  else if(s === 'all') html = vAll();
+  else if(s === 'save') html = vSave();
+  main.className = s === 'all' ? 'wide' : '';
+  main.innerHTML = html;
+  navbar.innerHTML = vNav();
+  navbar.hidden = s === 'welcome';
+
+  const changed = state.prevScreen !== s;
+  state.prevScreen = s;
+  if(changed){
+    if(canSpeak) speechSynthesis.cancel();
+    window.scrollTo(0, 0);
+    if(!state.focus){ const h = $('screenTitle'); if(h) h.focus({preventScroll:true}); }
+  }
+  const target = state.focus || keepId;
+  if(target){ const el = $(target); if(el) el.focus({preventScroll: !state.focus}); }
+  state.focus = null;
+  if(state.flash){
+    const el = $('item-' + state.flash);
+    if(el){ el.classList.add('flash'); el.scrollIntoView({block:'nearest', behavior:'smooth'}); setTimeout(() => el.classList.remove('flash'), 1400); }
+    state.flash = null;
+  }
+}
+
+function go(to){ state.screen = to; render(); }
+function step(d){ const f = flow(); const i = f.indexOf(state.screen); const t = f[i + d]; if(t) go(t); }
+
+function setEasy(v){
+  state.easy = v;
+  const s = state.screen;
+  if(!v && s.startsWith('sec:')) state.screen = 'all';
+  else if(v && s === 'all'){ const first = selectedSecs()[0]; state.screen = first ? 'sec:' + first.id : 'save'; }
+  render('easySwitch');
+}
+
+/* ---------- Items ---------- */
+function addedBy(){ return state.by || (state.mode === 'self' && state.owner) || MODE_LABEL[state.mode] || ''; }
+function guessType(text){ return /\s/.test(text.trim()) ? 'Phrase' : 'Word'; }
+
+function addItem(secId, text){
+  text = text.replace(/\s+/g, ' ').trim();
+  if(!text) return null;
+  const dup = state.items.find(i => i.section === secId && i.text.toLowerCase() === text.toLowerCase());
+  if(dup){ state.flash = dup.id; toast(`“${text}” is already on the list`); return null; }
+  const it = {id:uid(), section:secId, text, type:guessType(text), photo:false, notes:'',
+              date:today(), by: addedBy()};
+  state.items.push(it);
+  state.dirty = true;
+  announce(`Added ${text}`);
+  return it;
+}
+
+function removeItem(id){
+  const idx = state.items.findIndex(i => i.id === id);
+  if(idx < 0) return;
+  const [it] = state.items.splice(idx, 1);
+  state.lastRemoved = {item:it, idx};
+  state.openItems.delete(id);
+  state.dirty = true;
+  toast(`Removed “${it.text}”`, true);
+}
+
+/* ---------- Toast / announce ---------- */
+let toastTimer;
+function toast(msg, undo){
+  $('toastMsg').textContent = msg;
+  $('toastUndo').hidden = !undo;
+  $('toast').classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.remove('show'), undo ? 6000 : 2400);
+}
+function announce(msg){ srSay(msg); }
+const sr = document.createElement('div'); sr.className = 'sr-only'; sr.setAttribute('aria-live','polite'); document.body.appendChild(sr);
+function srSay(msg){ sr.textContent = ''; setTimeout(() => { sr.textContent = msg; }, 30); }
+
+/* ---------- Speech ---------- */
+let speakingBtn = null;
+function speak(btn){
+  if(!canSpeak) return;
+  if(speakingBtn === btn){ speechSynthesis.cancel(); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(btn.dataset.text);
+  u.rate = 0.9; u.lang = 'en-US';
+  const reset = () => { if(speakingBtn){ speakingBtn.setAttribute('aria-pressed','false'); speakingBtn.querySelector('span').textContent = 'Read aloud'; } speakingBtn = null; };
+  u.onend = reset; u.onerror = reset;
+  if(speakingBtn) reset();
+  speakingBtn = btn; btn.setAttribute('aria-pressed','true'); btn.querySelector('span').textContent = 'Stop';
+  speechSynthesis.speak(u);
+}
+
+/* ---------- Export ---------- */
+function sortedItemsFor(sec){ return itemsIn(sec.id); }
+const slug = (v, n) => String(v || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, n || 50).replace(/-+$/, '');
+function photoPaths(){
+  const map = new Map(), used = new Set();
+  state.sections.forEach(sec => itemsIn(sec.id).forEach(it => {
+    if(!it.img) return;
+    const folder = slug(sec.csv) || 'topic', base = slug(it.text) || 'photo';
+    let name = base, k = 2;
+    while(used.has(folder + '/' + name)) name = base + '-' + k++;
+    used.add(folder + '/' + name);
+    map.set(it.id, folder + '/' + name + '.jpg');
+  }));
+  return map;
+}
+function exportRows(){
+  const rows = [], paths = photoPaths();
+  if(state.owner) rows.push(['About this list', state.owner, 'Info', '', '', '', 'List for', today(), addedBy()]);
+  state.sections.forEach(sec => {
+    itemsIn(sec.id).forEach(it => {
+      const pf = paths.get(it.id);
+      rows.push([sec.csv, it.text, it.type, (it.photo || it.img) ? 'Yes' : '', pf ? 'photos/' + pf : '', pf ? (it.kind === 'scene' ? 'Scene' : 'Close-up') : '', it.notes, it.date, it.by]);
+    });
+  });
+  return rows;
+}
+function csvCell(v){
+  v = String(v == null ? '' : v);
+  if(/^[=+@]/.test(v)) v = "'" + v;
+  return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+}
+const README = `My Words & Photos — word list
+==============================
+
+word-list.csv   Your list. Open it in Google Sheets (File > Import > Upload) or Excel.
+photos/         Each photo, named after its word or phrase, in a folder for each topic.
+photos-square/  The same photos cropped square, ready for buttons in a communication app.
+
+To add more later: open My Words & Photos, choose "Continue a saved list", and pick this .zip file.
+(If you unzipped it, you can instead select word-list.csv together with the photos.)
+`;
+async function download(){
+  const csv = '\uFEFF' + [HEADER, ...exportRows()].map(r => r.map(csvCell).join(',')).join('\r\n');
+  const stem = `${slug(state.owner, 30) || 'my'}-word-list-${today()}`;
+  const withPhotos = state.items.some(i => i.img);
+  let blob, name;
+  if(withPhotos){
+    toast('Packing your photos…');
+    const paths = photoPaths(), files = [{name:'word-list.csv', data:csv}, {name:'README.txt', data:README}];
+    for(const it of state.items){
+      const pf = paths.get(it.id); if(!pf) continue;
+      files.push({name:'photos/' + pf, data:it.img});
+      try { files.push({name:'photos-square/' + pf, data: await squareCrop(it.img)}); } catch(e){}
+    }
+    blob = await makeZip(files); name = stem + '.zip';
+  } else {
+    blob = new Blob([csv], {type:'text/csv;charset=utf-8'}); name = stem + '.csv';
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  state.dirty = false;
+  toast('Downloaded. Keep this file to add more later.');
+}
+
+/* ---------- Images ---------- */
+function loadImg(blob){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(blob), img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('decode')); };
+    img.src = url;
+  });
+}
+function toJpeg(canvas){ return new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(new Error('encode')), 'image/jpeg', 0.84)); }
+async function shrink(file, max){
+  const img = await loadImg(file);
+  let w = img.naturalWidth, h = img.naturalHeight; const k = Math.min(1, (max || 1000) / Math.max(w, h));
+  w = Math.round(w * k); h = Math.round(h * k);
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.drawImage(img, 0, 0, w, h);
+  return toJpeg(c);
+}
+async function squareCrop(blob, size){
+  const img = await loadImg(blob);
+  const s = Math.min(img.naturalWidth, img.naturalHeight), out = Math.min(size || 600, s);
+  const c = document.createElement('canvas'); c.width = c.height = out;
+  c.getContext('2d').drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, out, out);
+  return toJpeg(c);
+}
+function setPhoto(it, blob, kind){
+  if(it.imgUrl) URL.revokeObjectURL(it.imgUrl);
+  it.img = blob; it.imgUrl = blob ? URL.createObjectURL(blob) : null;
+  it.kind = blob ? (kind || it.kind || 'closeup') : undefined;
+}
+
+/* ---------- ZIP (no library; photos are stored, not recompressed) ---------- */
+const CRC_T = (() => { const t = new Uint32Array(256); for(let n = 0; n < 256; n++){ let c = n; for(let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8){ let c = 0xFFFFFFFF; for(let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+async function makeZip(files){
+  const enc = new TextEncoder(), parts = [], central = []; let offset = 0;
+  const d = new Date();
+  const dosTime = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+  const dosDate = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  for(const f of files){
+    const data = typeof f.data === 'string' ? enc.encode(f.data) : new Uint8Array(await f.data.arrayBuffer());
+    const name = enc.encode(f.name), crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+    lh.setUint16(10, dosTime, true); lh.setUint16(12, dosDate, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, name.length, true); lh.setUint16(28, 0, true);
+    parts.push(lh.buffer, name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+    ch.setUint16(12, dosTime, true); ch.setUint16(14, dosDate, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, name.length, true);
+    ch.setUint32(42, offset, true);
+    central.push(ch.buffer, name);
+    offset += 30 + name.length + data.length;
+  }
+  const cdSize = central.reduce((n, p) => n + p.byteLength, 0);
+  const e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
+  e.setUint32(12, cdSize, true); e.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, e.buffer], {type:'application/zip'});
+}
+async function readZip(blob){
+  const buf = new Uint8Array(await blob.arrayBuffer()), dv = new DataView(buf.buffer), dec = new TextDecoder();
+  let e = -1;
+  for(let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--){ if(dv.getUint32(i, true) === 0x06054b50){ e = i; break; } }
+  if(e < 0) throw new Error('zip');
+  const n = dv.getUint16(e + 10, true); let p = dv.getUint32(e + 16, true); const out = {};
+  for(let k = 0; k < n; k++){
+    if(dv.getUint32(p, true) !== 0x02014b50) throw new Error('zip');
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true);
+    const nlen = dv.getUint16(p + 28, true), xlen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true), loff = dv.getUint32(p + 42, true);
+    const name = dec.decode(buf.subarray(p + 46, p + 46 + nlen)); p += 46 + nlen + xlen + clen;
+    const base = name.split('/').pop();
+    if(!base || name.startsWith('__MACOSX') || base.startsWith('._')) continue;
+    const ds = loff + 30 + dv.getUint16(loff + 26, true) + dv.getUint16(loff + 28, true);
+    const raw = buf.subarray(ds, ds + csize);
+    if(method === 0) out[name] = raw;
+    else if(method === 8 && 'DecompressionStream' in window)
+      out[name] = new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+  }
+  return out;
+}
+async function copyTSV(){
+  const clean = v => String(v == null ? '' : v).replace(/[\t\r\n]+/g, ' ');
+  const rows = (state.includeHeader ? [HEADER] : []).concat(exportRows());
+  const text = rows.map(r => r.map(clean).join('\t')).join('\n');
+  try { await navigator.clipboard.writeText(text); }
+  catch(e){ const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  toast('Copied. Click a cell in your sheet and paste.');
+}
+
+/* ---------- Print ---------- */
+function buildPrint(kind){
+  if(kind === 'board') return buildBoard();
+  if(kind === 'checklist') return buildChecklist();
+  const thumbs = state.items.some(i => i.img);
+  let h = `<div class="p-head"><div><h1>Communication Vocabulary Profile</h1><p class="p-sub">For AAC and communication supports planning</p></div>
+    <div class="p-meta">List for: <b>${esc(state.owner) || '__________________'}</b><br>Completed by: ${esc(addedBy()) || "__________________"}<br>Printed: ${today()}</div></div>
+    <div class="p-blank"><span>Clinic:</span><span>Clinician:</span></div>`;
+  state.sections.forEach(sec => {
+    const items = sortedItemsFor(sec);
+    if(!items.length) return;
+    h += `<h2>${esc(sec.csv)} (${items.length})</h2><table><thead><tr>${thumbs ? '<th></th>' : ''}<th>Word / phrase</th><th>Type</th><th>Photo / object</th><th>Notes</th></tr></thead><tbody>`;
+    items.forEach(it => {
+      const notes = esc(it.notes);
+      h += `<tr>${thumbs ? `<td class="t">${it.imgUrl ? `<img src="${it.imgUrl}" alt="">` : ''}</td>` : ''}<td class="w">${esc(it.text)}</td><td>${esc(it.type)}</td><td>${it.img ? (it.kind === 'scene' ? 'Photo (scene)' : 'Photo') : it.photo ? 'Yes' : ''}</td><td>${notes}</td></tr>`;
+    });
+    h += `</tbody></table>`;
+  });
+  if(!state.items.length) h += `<p>No items yet.</p>`;
+  h += `<p class="p-foot">Made with My Words &amp; Photos. Bring this summary to your speech-language pathologist.</p>`;
+  $('printArea').innerHTML = h;
+}
+
+function buildBoard(){
+  const [cols, rows] = state.boardSize.split('x').map(Number), per = cols * rows;
+  let h = '';
+  state.sections.forEach(sec => {
+    const items = sortedItemsFor(sec).filter(it => state.boardAll || it.img);
+    if(!items.length) return;
+    const pages = Math.ceil(items.length / per);
+    for(let pg = 0; pg < pages; pg++){
+      const chunk = items.slice(pg * per, pg * per + per);
+      const cards = chunk.map(it => `<div class="b-card ${it.imgUrl ? '' : 'noimg'}">${it.imgUrl ? `<div class="b-img"><img src="${it.imgUrl}" alt=""></div>` : ''}<div class="b-label">${esc(it.text)}</div></div>`);
+      while(cards.length < per) cards.push('<div class="b-card blank"></div>');
+      h += `<section class="b-page b-${cols}x${rows}" style="--cols:${cols};--rows:${rows};--c:${sec.color}"><header class="b-head">${esc(sec.csv)}${pages > 1 ? `<span>${pg + 1} of ${pages}</span>` : ''}</header><div class="b-grid">${cards.join('')}</div></section>`;
+    }
+  });
+  $('printArea').innerHTML = h || '<p>No words to show yet.</p>';
+}
+function buildChecklist(){
+  const paths = photoPaths(), total = state.items.length;
+  let h = `<div class="p-head"><div><h1>Programming checklist</h1><p class="p-sub">${esc(state.owner) ? `For ${esc(state.owner)} · ` : ''}${total} button${total===1?'':'s'} · sorted by topic</p></div>
+    <div class="p-meta">Device / app: ______________<br>Programmed by: ______________<br>Printed: ${today()}</div></div>
+    <p class="ck-note">Square button photos are in the <b>photos-square</b> folder of the downloaded .zip, named to match the file column. Scene photos suit scene / visual scene display pages.</p>`;
+  state.sections.forEach(sec => {
+    const items = sortedItemsFor(sec);
+    if(!items.length) return;
+    h += `<h2>${esc(sec.csv)} (${items.length})</h2><table class="ck"><thead><tr><th>Done</th><th></th><th>Button label</th><th>Photo file</th><th>Notes</th></tr></thead><tbody>`;
+    items.forEach(it => {
+      const pf = paths.get(it.id);
+      h += `<tr><td class="box"><span></span></td><td class="t">${it.imgUrl ? `<img src="${it.imgUrl}" alt="">` : ''}</td><td class="w">${esc(it.text)}</td><td class="f">${pf ? esc(pf) + (it.kind === 'scene' ? '<br><i>Scene</i>' : '') : (it.photo ? '<i>Photo/object kept by family</i>' : '')}</td><td>${esc(it.notes)}</td></tr>`;
+    });
+    h += `</tbody></table>`;
+  });
+  if(!total) h += '<p>No items yet.</p>';
+  $('printArea').innerHTML = h;
+}
+let printing = false;
+async function doPrint(kind){
+  buildPrint(kind);
+  printing = true;
+  await Promise.all([...$('printArea').querySelectorAll('img')].map(i => i.decode ? i.decode().catch(() => {}) : null));
+  window.print();
+  setTimeout(() => { printing = false; }, 1500);
+}
+
+/* ---------- Import ---------- */
+function parseCSV(text){
+  const rows = []; let row = [], f = '', q = false;
+  for(let i = 0; i < text.length; i++){
+    const c = text[i];
+    if(q){
+      if(c === '"'){ if(text[i+1] === '"'){ f += '"'; i++; } else q = false; }
+      else f += c;
+    } else if(c === '"') q = true;
+    else if(c === ',' || c === '\t'){ row.push(f); f = ''; }
+    else if(c === '\n' || c === '\r'){ if(c === '\r' && text[i+1] === '\n') i++; row.push(f); rows.push(row); row = []; f = ''; }
+    else f += c;
+  }
+  if(f !== '' || row.length){ row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim() !== ''));
+}
+function importCSV(text, images){
+  images = images || {};
+  text = text.replace(/^\uFEFF/, '');
+  const rows = parseCSV(text);
+  if(!rows.length) throw new Error('empty');
+  const head = rows[0].map(h => h.trim().toLowerCase());
+  const col = name => head.indexOf(name.toLowerCase());
+  const cSec = col('Section'), cText = col('Word or phrase');
+  if(cSec < 0 || cText < 0) throw new Error('format');
+  const get = (r, name) => { const k = col(name); return k < 0 ? '' : (r[k] || '').trim(); };
+  const unq = v => v.replace(/^'(?=[=+@])/, '');
+  let added = 0, photos = 0;
+  const keys = Object.keys(images);
+  const findImg = pf => {
+    if(!pf) return null;
+    pf = pf.replace(/^\.?\//, '');
+    if(images[pf]) return images[pf];
+    let k = keys.find(x => x.endsWith('/' + pf) && !x.includes('photos-square/'));
+    if(k) return images[k];
+    const base = pf.split('/').pop().toLowerCase();
+    k = keys.find(x => x.split('/').pop().toLowerCase() === base && !x.includes('photos-square/'));
+    return k ? images[k] : null;
+  };
+  rows.slice(1).forEach(r => {
+    const secName = (r[cSec] || '').trim();
+    const text = unq((r[cText] || '').trim());
+    if(!secName || !text) return;
+    if(secName === 'About this list'){ if(!state.owner) state.owner = text; return; }
+    if(secName === 'Closing questions'){
+      return;
+    }
+    let sec = state.sections.find(s => s.csv.toLowerCase() === secName.toLowerCase());
+    if(!sec){
+      sec = {id:'c' + uid(), csv:secName, title:secName, icon:'tag', color:'#5B5954', custom:true, desc:'Your own topic', prompt:'', examples:[], selected:true};
+      state.sections.push(sec);
+    }
+    sec.selected = true;
+    const img = findImg(get(r,'Photo file'));
+    const kind = /scene/i.test(get(r,'Photo type')) ? 'scene' : 'closeup';
+    const existing = state.items.find(i => i.section === sec.id && i.text.toLowerCase() === text.toLowerCase());
+    if(existing){ if(img && !existing.img){ setPhoto(existing, img, kind); photos++; } return; }
+    const type = TYPES.find(t => t.toLowerCase() === get(r,'Type').toLowerCase()) || guessType(text);
+    state.items.push({
+      id:uid(), section:sec.id, text, type,
+      photo: /^y/i.test(get(r,'Photo or object')) && !img,
+      notes: unq(get(r,'Notes')),
+      date: get(r,'Date added') || today(),
+      by: get(r,'Added by')
+    });
+    if(img){ setPhoto(state.items[state.items.length - 1], img, kind); photos++; }
+    added++;
+  });
+  return {added, photos};
+}
+
+/* ---------- Events ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if(!b) return;
+  const a = b.dataset.act, secId = b.dataset.sec, id = b.dataset.id;
+  switch(a){
+    case 'home':
+      if(state.screen !== 'welcome'){ state.notice = null; go('welcome'); }
+      break;
+    case 'mode':
+      state.mode = b.dataset.mode;
+      if(!state.easyTouched) state.easy = state.mode !== 'about';
+      state.notice = null;
+      go('picker');
+      break;
+    case 'load': $('fileInput').click(); break;
+    case 'next': step(1); break;
+    case 'back': step(-1); break;
+    case 'toggle-topic': { const s = getSec(secId); s.selected = !s.selected; render(b.id); break; }
+    case 'remove-topic': {
+      const s = getSec(secId); const n = itemsIn(secId).length;
+      if(n && !confirm(`Delete the topic “${s.title}” and its ${n} item${n>1?'s':''}?`)) return;
+      state.sections = state.sections.filter(x => x.id !== secId);
+      state.items = state.items.filter(i => i.section !== secId);
+      state.dirty = true; state.focus = 'customInp'; render(); break;
+    }
+    case 'add-topic': addTopic(); break;
+    case 'add': {
+      const inp = $('inp-' + secId);
+      if(addItem(secId, inp.value)) inp.value = '';
+      state.focus = 'inp-' + secId; render(); break;
+    }
+    case 'chip': {
+      const sec = getSec(secId), val = b.dataset.val;
+      if(sec.fillOnly){
+        const inp = $('inp-' + secId);
+        inp.value = val.replace(/…$/, '').trim() + ' ';
+        inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length);
+        return;
+      }
+      const ex = state.items.find(i => i.section === secId && i.text.toLowerCase() === val.toLowerCase());
+      if(ex) removeItem(ex.id); else addItem(secId, val);
+      render(b.id); break;
+    }
+    case 'toggle-item':
+      state.openItems.has(id) ? state.openItems.delete(id) : state.openItems.add(id);
+      render(b.id); break;
+    case 'remove': {
+      const it = state.items.find(i => i.id === id);
+      removeItem(id); state.focus = 'inp-' + it.section; render(); break;
+    }
+    case 'undo':
+      if(state.lastRemoved){ state.items.splice(state.lastRemoved.idx, 0, state.lastRemoved.item); state.flash = state.lastRemoved.item.id; state.lastRemoved = null; state.dirty = true; $('toast').classList.remove('show'); render(); }
+      break;
+    case 'collapse':
+      state.collapsed.has(secId) ? state.collapsed.delete(secId) : state.collapsed.add(secId);
+      render(b.id); break;
+    case 'speak': speak(b); break;
+    case 'download': download(); break;
+    case 'copy': copyTSV(); break;
+    case 'print': if(!b.disabled) doPrint(b.dataset.kind || 'summary'); break;
+    case 'add-photo': state.photoTarget = id; $('photoInput').click(); break;
+    case 'remove-photo': {
+      const it = state.items.find(i => i.id === id); if(!it) break;
+      setPhoto(it, null); state.dirty = true; srSay('Photo removed'); state.focus = 'tog-' + id; render(); break;
+    }
+    case 'new':
+      if(state.items.length && state.dirty && !confirm('Start over? Anything not downloaded will be lost.')) return;
+      if(canSpeak) speechSynthesis.cancel();
+      { const easyTouched = state.easyTouched, easy = state.easy; state = freshState(); if(easyTouched){ state.easyTouched = true; state.easy = easy; } }
+      render(); break;
+  }
+});
+
+function addTopic(){
+  const inp = $('customInp'); const name = inp.value.replace(/\s+/g, ' ').trim();
+  if(!name) { inp.focus(); return; }
+  if(state.sections.some(s => s.csv.toLowerCase() === name.toLowerCase() || tx(s.title).toLowerCase() === name.toLowerCase())){ toast('That topic is already on the list'); return; }
+  const id = 'c' + uid();
+  state.sections.push({id, csv:name, title:name, icon:'tag', color:'#5B5954', custom:true, desc:'Your own topic', prompt:'', examples:[], selected:true});
+  state.dirty = true; state.focus = 'customInp'; render();
+  srSay(`Added topic ${name}`);
+}
+
+sw.addEventListener('click', () => { state.easyTouched = true; setEasy(!state.easy); });
+
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Enter' || e.isComposing) return;
+  const t = e.target;
+  if(t.dataset && t.dataset.adder){
+    e.preventDefault();
+    const secId = t.dataset.adder;
+    if(addItem(secId, t.value)) t.value = '';
+    state.focus = 'inp-' + secId; render();
+  } else if(t.id === 'customInp'){ e.preventDefault(); addTopic(); }
+});
+
+document.addEventListener('input', e => {
+  const t = e.target;
+  if(t.dataset.meta){ state[t.dataset.meta] = t.value; state.dirty = true; }
+  else if(t.dataset.field === 'notes'){ const it = state.items.find(i => i.id === t.dataset.id); if(it){ it.notes = t.value; state.dirty = true; } }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if(t.id === 'incHeader'){ state.includeHeader = t.checked; return; }
+  if(t.id === 'boardAll'){ state.boardAll = t.checked; return; }
+  if(t.name === 'boardSize'){ state.boardSize = t.value; return; }
+  const f = t.dataset && t.dataset.field; if(!f || f === 'notes') return;
+  const it = state.items.find(i => i.id === t.dataset.id); if(!it) return;
+  if(f === 'photo') it.photo = t.checked;
+  else if(f === 'type') it.type = t.value;
+  else if(f === 'kind') it.kind = t.value;
+  state.dirty = true;
+  render();
+  // keep focus on the control that changed
+  const again = document.querySelector(`[data-field="${f}"][data-id="${it.id}"]${f === 'kind' ? `[value="${t.value}"]` : ''}`); if(again) again.focus();
+});
+
+$('fileInput').addEventListener('change', async e => {
+  const files = [...e.target.files]; e.target.value = '';
+  if(!files.length) return;
+  const dec = new TextDecoder();
+  let csvText = null, label = files.length === 1 ? files[0].name : files.length + ' files';
+  const images = {};
+  try {
+    for(const f of files){
+      if(/\.zip$/i.test(f.name) || f.type === 'application/zip'){
+        const entries = await readZip(f);
+        for(const [name, data] of Object.entries(entries)){
+          if(/\.csv$/i.test(name)){ if(!csvText || /word-list\.csv$/i.test(name)) csvText = dec.decode(data); }
+          else if(/\.(jpe?g|png|webp|gif)$/i.test(name)) images[name] = new Blob([data], {type: /png$/i.test(name) ? 'image/png' : 'image/jpeg'});
+        }
+      } else if(/\.csv$/i.test(f.name)) csvText = await f.text();
+      else if(/^image\//.test(f.type) || /\.(jpe?g|png|webp|gif)$/i.test(f.name)) images[f.name] = f;
+    }
+    if(!csvText) throw new Error('nocsv');
+    const r = importCSV(csvText, images);
+    state.notice = {text:`Loaded ${r.added} item${r.added===1?'':'s'}${r.photos ? ` and ${r.photos} photo${r.photos===1?'':'s'}` : ''} from “${label}”. Now choose who is filling it out today.`};
+    state.dirty = false;
+  } catch(err){
+    state.notice = {err:true, text:'That doesn’t look like a saved word list. Choose the .zip or .csv file you downloaded from this page.'};
+  }
+  render();
+});
+
+$('photoInput').addEventListener('change', async e => {
+  const file = e.target.files[0]; e.target.value = '';
+  const it = state.items.find(i => i.id === state.photoTarget); state.photoTarget = null;
+  if(!file || !it) return;
+  toast('Adding photo…');
+  try {
+    const blob = await shrink(file, 1000);
+    setPhoto(it, blob, it.kind || 'closeup');
+    state.dirty = true;
+    state.openItems.add(it.id);
+    state.focus = 'tog-' + it.id;
+    toast('Photo added');
+    render();
+  } catch(err){
+    toast('That photo couldn’t be opened. Try a JPEG or PNG.');
+  }
+});
+
+window.addEventListener('beforeunload', e => { if(state.dirty && state.items.length){ e.preventDefault(); e.returnValue = ''; } });
+window.addEventListener('beforeprint', () => { if(!printing) buildPrint('summary'); });
+window.addEventListener('afterprint', () => { printing = false; });
+
+render();
+})();
+</script>
+</body>
+</html>
